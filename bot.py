@@ -10,10 +10,10 @@ import psycopg2
 import asyncio
 
 con = psycopg2.connect(
-database="bot",
-user="postgres",
-password="Toirjonov2006",
-host="localhost",
+database="bot_mnsg",
+user="bot_mnsg_user",
+password="4XcRw7LOjROehArDzhEBrfLzUAJqC8gF",
+host="dpg-cmn65g0l5elc73cg2q00-a.singapore-postgres.render.com",
 port= '5432'
 )
 
@@ -368,7 +368,7 @@ async def idish_yuvish(message: types.Message):
 if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
     scheduler.add_job(idish_task, 'cron', hour=9, minute=0, args=[-1002010267678])
-    scheduler.add_job(non_task, 'cron', hour=17, minute=36, args=[-1002010267678])
+    scheduler.add_job(non_task, 'cron', hour=9, minute=0, args=[-1002010267678])
     scheduler.add_job(uy_task, 'cron', hour=9, minute=0, args=[-1002010267678])
     scheduler.add_job(vanna_task, 'cron', hour=9, minute=0, args=[-1002010267678])
     scheduler.start()
