@@ -4,10 +4,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime, timedelta
-import schedule
-from threading import Thread
-from time import sleep
 import psycopg2
 import asyncio
 
@@ -28,13 +26,6 @@ logging.basicConfig(level=logging.INFO)
 storage = MemoryStorage()
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
-
-
-###### SCHEDULE
-def schedule_checker():
-    while True:
-        schedule.run_pending()
-        sleep(1)
 
 
 #### USER REGISTARTION
@@ -116,6 +107,7 @@ async def idish_task(chat_id):
 
 
 async def non_task(chat_id):
+    print(2)
     with con:
         with con.cursor() as curs_obj:
             today = datetime.today()
@@ -372,22 +364,12 @@ async def idish_yuvish(message: types.Message):
         await message.answer("Ishlar ro'yhati: ", reply_markup=menu_markup)
     
 
-# async def main():
-#     loop.create_task(idish_task(-1002010267678))
-#     loop.create_task(non_task(-1002010267678))
-#     loop.create_task(uy_task(-1002010267678))
-#     loop.create_task(vanna_task(-1002010267678))
-
 
 if __name__ == '__main__':
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(main())
-    schedule.every().day.at("09:00").do(idish_task, -1002010267678)
-    schedule.every().day.at("09:00").do(non_task, -1002010267678)
-    schedule.every().day.at("09:00").do(uy_task, -1002010267678)
-    schedule.every().day.at("09:00").do(vanna_task, -1002010267678)
-    Thread(target=schedule_checker).start()
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(idish_task, 'cron', hour=9, minute=0, args=[-1002010267678])
+    scheduler.add_job(non_task, 'cron', hour=17, minute=36, args=[-1002010267678])
+    scheduler.add_job(uy_task, 'cron', hour=9, minute=0, args=[-1002010267678])
+    scheduler.add_job(vanna_task, 'cron', hour=9, minute=0, args=[-1002010267678])
+    scheduler.start()
     executor.start_polling(dp, skip_updates=True)
-
-
-##### CHAT ID -----      -1002010267678
